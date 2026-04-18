@@ -1,0 +1,26 @@
+{
+  "name": "echoflowpro",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "node tests/run-tests.js",
+    "cf:build": "npx opennextjs-cloudflare build",
+    "cf:deploy": "npx opennextjs-cloudflare deploy",
+    "preview": "npm run cf:build && npx opennextjs-cloudflare preview",
+    "deploy": "npm run cf:build && npm run cf:deploy"
+  },
+  "dependencies": {
+    "next": "15.5.13",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@opennextjs/cloudflare": "^1.17.3",
+    "wrangler": "^4.77.0"
+  }
+}

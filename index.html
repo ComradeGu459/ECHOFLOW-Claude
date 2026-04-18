@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpeakFlow | 口语练习学习网站</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: rgba(255, 255, 255, 0.78);
+      --text: #0f172a;
+      --muted: #5b6475;
+      --shadow: 0 30px 80px rgba(15, 23, 42, 0.12);
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.08);
+      --brand: #ff5f8f;
+      --brand-deep: #ff336f;
+      --brand-soft: #ffe1eb;
+      --accent-soft: #dbe7ff;
+      --mint-soft: #dff8f1;
+      --max: 1240px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 95, 143, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(79, 124, 255, 0.14), transparent 22%),
+        linear-gradient(180deg, #f8fbff 0%, #f1f5fb 40%, #edf2f8 100%);
+      color: var(--text);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    .shell { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: rgba(244, 247, 251, 0.72);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 78px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--brand-deep), #ff8cab 65%, #ffc2d5);
+      box-shadow: 0 16px 32px rgba(255, 77, 126, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .brand-mark::before {
+      width: 24px;
+      height: 8px;
+      top: 11px;
+      left: 9px;
+      transform: rotate(-28deg);
+    }
+
+    .brand-mark::after {
+      width: 18px;
+      height: 8px;
+      bottom: 11px;
+      right: 8px;
+      transform: rotate(-28deg);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 22px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .button:hover { transform: translateY(-2px); }
+    .button.primary {
+      color: #fff;
+      background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+      box-shadow: 0 16px 36px rgba(255, 77, 126, 0.28);
+    }
+
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.7);
+      border-color: rgba(15, 23, 42, 0.08);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .hero { padding: 48px 0 42px; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 40px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      color: #344054;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #18c6a3, #39ddb8);
+      box-shadow: 0 0 0 6px rgba(24, 198, 163, 0.14);
+    }
+
+    h1 {
+      margin: 22px 0 18px;
+      font-size: clamp(42px, 6vw, 82px);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+    }
+
+    .headline-accent {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-copy p {
+      margin: 0 0 28px;
+      max-width: 640px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .metric {
+      padding: 18px 18px 16px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .metric strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+    }
+
+    .metric span { color: var(--muted); font-size: 14px; }
+
+    .hero-stage {
+      position: relative;
+      padding: 28px;
+      border-radius: 40px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.7)),
+        linear-gradient(135deg, rgba(255, 95, 143, 0.18), rgba(79, 124, 255, 0.14));
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .desktop-window {
+      position: relative;
+      z-index: 1;
+      border-radius: 28px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+    }
+
+    .window-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+      background: linear-gradient(180deg, #f9fbff, #f4f7fd);
+    }
+
+    .window-dots { display: flex; gap: 8px; }
+    .window-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d3d9e5;
+    }
+
+    .window-dots span:nth-child(1) { background: #ff6e86; }
+    .window-dots span:nth-child(2) { background: #ffca5f; }
+    .window-dots span:nth-child(3) { background: #36d399; }
+
+    .window-search {
+      width: min(100%, 280px);
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: #eef3fa;
+      color: #7b8798;
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      padding: 18px;
+    }
+
+    .video-panel,
+    .subtitle-panel,
+    .phone-card,
+    .surface-card,
+    .feature-card,
+    .theme-card,
+    .api-card,
+    .flash-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .video-panel { border-radius: 24px; padding: 16px; }
+    .video-frame {
+      height: 330px;
+      border-radius: 22px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0), rgba(15, 23, 42, 0.38)),
+        url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80") center/cover;
+      position: relative;
+    }
+
+    .video-pill,
+    .player-chip,
+    .tag,
+    .mini-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .video-pill {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(14px);
+    }
+
+    .video-caption {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .video-caption strong {
+      font-size: 28px;
+      color: #fff;
+      letter-spacing: -0.03em;
+    }
+
+    .caption-line {
+      max-width: 82%;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.15);
+      color: #f8fbff;
+      backdrop-filter: blur(16px);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .video-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .player-chip {
+      min-height: 36px;
+      padding: 0 14px;
+      background: #f4f7fb;
+      color: #425066;
+    }
+
+    .player-chip.active {
+      background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+      color: #fff;
+    }
+
+    .subtitle-panel {
+      border-radius: 24px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .panel-head strong { font-size: 18px; letter-spacing: -0.02em; }
+    .subtitle-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .subtitle-item {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: #f7f9fc;
+      border: 1px solid transparent;
+    }
+
+    .subtitle-item.active {
+      background: linear-gradient(180deg, #fff7dc, #fff3c4);
+      border-color: #f0d88e;
+      box-shadow: inset 0 0 0 1px rgba(255, 190, 77, 0.25);
+    }
+
+    .subtitle-item time {
+      display: block;
+      margin-bottom: 6px;
+      color: #7b8798;
+      font-size: 12px;
+    }
+
+    .subtitle-item b { color: #101828; font-size: 14px; }
+    .subtitle-item p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .highlight {
+      color: #0c8c74;
+      background: linear-gradient(180deg, transparent 40%, rgba(24, 198, 163, 0.24) 40%);
+    }
+
+    .floating-phone {
+      position: absolute;
+      left: -48px;
+      bottom: 42px;
+      width: 210px;
+      padding: 10px;
+      border-radius: 34px;
+      background: linear-gradient(180deg, #141823, #2b3142);
+      box-shadow: 0 30px 50px rgba(15, 23, 42, 0.24);
+      z-index: 2;
+    }
+
+    .phone-screen {
+      border-radius: 26px;
+      padding: 16px 14px;
+      background: linear-gradient(180deg, #f9fbff, #f1f6fb);
+      min-height: 400px;
+    }
+
+    .phone-notch {
+      width: 96px;
+      height: 22px;
+      margin: 0 auto 18px;
+      border-radius: 999px;
+      background: #161b28;
+    }
+
+    .phone-card { border-radius: 20px; padding: 14px; }
+    .phone-card + .phone-card { margin-top: 12px; }
+    .phone-card strong { display: block; margin-bottom: 10px; font-size: 13px; }
+
+    .mic-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mic-button {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1dd0aa, #2bdfbb);
+      box-shadow: 0 16px 24px rgba(24, 198, 163, 0.26);
+      position: relative;
+    }
+
+    .mic-button::before {
+      content: "";
+      position: absolute;
+      inset: 18px 22px;
+      border-radius: 999px;
+      border: 2px solid #fff;
+      border-top-width: 8px;
+      border-bottom: none;
+    }
+
+    section { padding: 42px 0; }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 52px);
+      letter-spacing: -0.04em;
+    }
+
+    .section-head p {
+      margin: 0;
+      max-width: 540px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .materials-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+    }
+
+    .surface-card { border-radius: 28px; padding: 22px; }
+    .surface-card.large { grid-column: span 7; }
+    .surface-card.small { grid-column: span 5; }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .card-title strong { font-size: 24px; letter-spacing: -0.03em; }
+    .card-title span { color: var(--muted); font-size: 14px; }
+
+    .material-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .material-item,
+    .theme-card,
+    .feature-card,
+    .api-card,
+    .flash-card {
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    .material-item {
+      background: #f8fbff;
+      border: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .material-cover {
+      height: 150px;
+      position: relative;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .material-cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.32));
+    }
+
+    .material-cover span {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      z-index: 1;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.66);
+      color: #fff;
+      font-size: 12px;
+    }
+
+    .material-body { padding: 14px; }
+    .material-body strong { display: block; margin-bottom: 6px; font-size: 18px; }
+    .material-body p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag, .mini-tag { padding: 7px 11px; }
+    .tag { background: #eff5ff; color: #3555a2; }
+    .mini-tag {
+      background: #f6f7fb;
+      color: #576172;
+      font-size: 11px;
+    }
+
+    .themes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .theme-card {
+      padding: 18px;
+      min-height: 144px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(245, 248, 253, 0.92));
+      border: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .theme-card:nth-child(1) { background: linear-gradient(135deg, #fff4f8, #ffffff); }
+    .theme-card:nth-child(2) { background: linear-gradient(135deg, #f2f7ff, #ffffff); }
+    .theme-card:nth-child(3) { background: linear-gradient(135deg, #effdf8, #ffffff); }
+    .theme-card:nth-child(4) { background: linear-gradient(135deg, #fff8ef, #ffffff); }
+    .theme-card strong { font-size: 20px; }
+    .theme-card p { margin: 8px 0 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .feature-card {
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.66);
+    }
+
+    .feature-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      margin-bottom: 18px;
+    }
+
+    .feature-card:nth-child(1) .feature-icon { background: var(--brand-soft); }
+    .feature-card:nth-child(2) .feature-icon { background: var(--accent-soft); }
+    .feature-card:nth-child(3) .feature-icon { background: var(--mint-soft); }
+    .feature-card:nth-child(4) .feature-icon { background: #fff3dd; }
+    .feature-card:nth-child(5) .feature-icon { background: #eee7ff; }
+    .feature-card:nth-child(6) .feature-icon { background: #e8f7ff; }
+
+    .feature-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 21px;
+      letter-spacing: -0.03em;
+    }
+
+    .feature-card p { margin: 0; color: var(--muted); line-height: 1.75; font-size: 15px; }
+
+    .ai-layout {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 18px;
+    }
+
+    .api-stack {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .api-card {
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .api-card strong { display: block; margin-bottom: 6px; font-size: 22px; }
+    .api-card p { margin: 0; color: var(--muted); line-height: 1.7; font-size: 14px; }
+
+    .ai-console {
+      border-radius: 28px;
+      padding: 22px;
+      background: linear-gradient(180deg, rgba(12, 18, 32, 0.96), rgba(18, 26, 42, 0.96));
+      color: #f8fbff;
+      box-shadow: 0 28px 60px rgba(9, 16, 30, 0.22);
+    }
+
+    .console-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: start;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .console-row:last-child { border-bottom: none; }
+    .console-row strong { display: block; font-size: 17px; margin-bottom: 6px; }
+    .console-row p { margin: 0; color: rgba(248, 251, 255, 0.72); line-height: 1.7; font-size: 14px; }
+
+    .score-chip {
+      min-width: 82px;
+      text-align: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #9dd8ff;
+      font-weight: 700;
+    }
+
+    .flash-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .flash-card {
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      min-height: 236px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .flash-card:nth-child(1) { background: linear-gradient(180deg, #fff6fa, #ffffff); }
+    .flash-card:nth-child(2) { background: linear-gradient(180deg, #f4f8ff, #ffffff); }
+    .flash-card:nth-child(3) { background: linear-gradient(180deg, #effdf7, #ffffff); }
+    .flash-card:nth-child(4) { background: linear-gradient(180deg, #fff8ef, #ffffff); }
+
+    .flash-card strong { font-size: 22px; letter-spacing: -0.03em; }
+    .flash-card p { margin: 10px 0 0; color: var(--muted); line-height: 1.75; font-size: 14px; }
+
+    .flash-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .cta-panel {
+      position: relative;
+      overflow: hidden;
+      padding: 34px;
+      border-radius: 34px;
+      background: linear-gradient(135deg, #111b31, #1d2a48 45%, #2d2145 100%);
+      color: #fff;
+      box-shadow: 0 32px 80px rgba(15, 23, 42, 0.18);
+    }
+
+    .cta-panel h2 {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 14px;
+      font-size: clamp(30px, 4vw, 54px);
+      letter-spacing: -0.04em;
+    }
+
+    .cta-panel p {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      max-width: 640px;
+      color: rgba(255, 255, 255, 0.76);
+      line-height: 1.8;
+    }
+
+    .cta-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .footer { padding: 28px 0 48px; color: #667085; font-size: 14px; }
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      border-top: 1px solid rgba(15, 23, 42, 0.06);
+      padding-top: 22px;
+    }
+
+    @media (max-width: 1120px) {
+      .hero-grid, .ai-layout, .workspace { grid-template-columns: 1fr; }
+      .floating-phone { position: static; width: min(100%, 280px); margin: 18px auto 0; }
+      .surface-card.large, .surface-card.small { grid-column: span 12; }
+      .features-grid, .flash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      .shell { width: min(100% - 24px, var(--max)); }
+      .nav-links { display: none; }
+      .nav-actions .button.secondary { display: none; }
+      .hero { padding-top: 26px; }
+      h1 { font-size: 44px; }
+      .hero-copy p, .section-head p, .cta-panel p { font-size: 15px; }
+      .hero-metrics, .materials-grid, .features-grid, .flash-grid, .themes, .api-stack, .material-list { grid-template-columns: 1fr; }
+      .workspace, .hero-stage, .surface-card, .feature-card, .cta-panel { padding: 16px; }
+      .video-frame { height: 240px; }
+      .section-head, .footer-row { flex-direction: column; align-items: start; }
+      .video-caption strong { font-size: 20px; }
+      .caption-line { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell nav">
+      <a class="brand" href="#top">
+        <span class="brand-mark"></span>
+        <span>SpeakFlow</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#materials">语料素材</a>
+        <a href="#features">练习系统</a>
+        <a href="#ai">AI 接口</a>
+        <a href="#cards">英语闪卡</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="button secondary" href="#features">查看功能</a>
+        <a class="button primary" href="#cta">开始设计</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">专为口语练习打造，不是文档工具套壳</span>
+          <h1>
+            为英语
+            <span class="headline-accent">口语练习</span>
+            单独开发的学习网站
+          </h1>
+          <p>
+            支持导入 YouTube 英语素材，串联字幕点读、逐句跟读、录音纠音、英语闪卡与 AI 助教。
+            整体体验更像一款高质感学习产品，而不是 FlowUs / Notion 式的文档页面。
+          </p>
+          <div class="nav-actions">
+            <a class="button primary" href="#materials">看核心体验</a>
+            <a class="button secondary" href="#ai">查看 API 能力</a>
+          </div>
+          <div class="hero-metrics">
+            <div class="metric">
+              <strong>200+</strong>
+              <span>可持续扩展的 YouTube 英语素材库</span>
+            </div>
+            <div class="metric">
+              <strong>4 家</strong>
+              <span>接入 DS / Gemini / 豆包 / 千问多模型接口</span>
+            </div>
+            <div class="metric">
+              <strong>3 端</strong>
+              <span>手机、平板、电脑统一练习体验</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-stage">
+          <div class="desktop-window">
+            <div class="window-top">
+              <div class="window-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <div class="window-search">导入 YouTube 链接，开始拆解口语素材</div>
+            </div>
+            <div class="workspace">
+              <div class="video-panel">
+                <div class="video-frame">
+                  <div class="video-pill">Vlog 素材库 · 实景表达</div>
+                  <div class="video-caption">
+                    <strong>Shadowing Mode</strong>
+                    <div class="caption-line">
+                      I think it really changes how you <span class="highlight">speak with confidence</span> in daily life.
+                    </div>
+                  </div>
+                </div>
+                <div class="video-footer">
+                  <div class="player-controls">
+                    <span class="player-chip active">逐句跟读</span>
+                    <span class="player-chip">字幕点读</span>
+                    <span class="player-chip">0.8x</span>
+                    <span class="player-chip">AB 循环</span>
+                  </div>
+                  <span class="mini-tag">评分 92 / 100</span>
+                </div>
+              </div>
+
+              <aside class="subtitle-panel">
+                <div class="panel-head">
+                  <strong>智能字幕系统</strong>
+                  <span class="mini-tag">中英双语</span>
+                </div>
+                <div class="subtitle-list">
+                  <div class="subtitle-item">
+                    <time>00:06</time>
+                    <b>That is where real spoken English starts to feel natural.</b>
+                    <p>真正自然的英语口语，就是从这里开始成形。</p>
+                  </div>
+                  <div class="subtitle-item active">
+                    <time>00:12</time>
+                    <b>When you repeat it enough, the rhythm becomes part of you.</b>
+                    <p>当你重复得足够多，语感和节奏就会真的进入你自己。</p>
+                  </div>
+                  <div class="subtitle-item">
+                    <time>00:19</time>
+                    <b>Click any word to open meanings, examples and flashcards.</b>
+                    <p>点击任意单词，立刻查看释义、例句与闪卡入口。</p>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+
+          <div class="floating-phone">
+            <div class="phone-screen">
+              <div class="phone-notch"></div>
+              <div class="phone-card">
+                <strong>随身跟读</strong>
+                <div class="tags">
+                  <span class="mini-tag">影子跟读</span>
+                  <span class="mini-tag">实时打分</span>
+                </div>
+                <div class="mic-row">
+                  <span class="mini-tag">08:09</span>
+                  <div class="mic-button"></div>
+                  <span class="mini-tag">1x</span>
+                </div>
+              </div>
+              <div class="phone-card">
+                <strong>单词闪卡</strong>
+                <p style="margin:0;color:#5b6475;font-size:13px;line-height:1.7;">
+                  naturally<br />
+                  adv. 自然地；不做作地
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="materials">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2>语料素材库，不做文档堆砌</h2>
+          </div>
+          <p>
+            首页入口直接围绕可练习的英语内容组织，按视频主题、表达密度、语速难度与使用场景筛选。
+            产品观感更接近成熟内容平台，而不是“表格 + 文本块”。
+          </p>
+        </div>
+
+        <div class="materials-grid">
+          <div class="surface-card large">
+            <div class="card-title">
+              <div>
+                <strong>YouTube 英语内容库</strong>
+                <span>导入链接后自动抽取字幕、主题、词组与表达卡片</span>
+              </div>
+              <span class="mini-tag">持续更新</span>
+            </div>
+            <div class="material-list">
+              <article class="material-item">
+                <div class="material-cover" style="background-image:url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80');">
+                  <span>12 分钟</span>
+                </div>
+                <div class="material-body">
+                  <strong>Daily Vlog</strong>
+                  <p>围绕日常生活和轻松表达，适合积累高频口语句型。</p>
+                  <div class="tags">
+                    <span class="tag">日常生活</span>
+                    <span class="tag">初中级</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="material-item">
+                <div class="material-cover" style="background-image:url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80');">
+                  <span>8 分钟</span>
+                </div>
+                <div class="material-body">
+                  <strong>Opinion Talk</strong>
+                  <p>适合练观点表达、连接词组织和较完整的输出结构。</p>
+                  <div class="tags">
+                    <span class="tag">观点表达</span>
+                    <span class="tag">中高级</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="material-item">
+                <div class="material-cover" style="background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80');">
+                  <span>15 分钟</span>
+                </div>
+                <div class="material-body">
+                  <strong>City Walk</strong>
+                  <p>围绕旅行、城市观察和场景描述，提升叙述能力与词汇密度。</p>
+                  <div class="tags">
+                    <span class="tag">城市旅行</span>
+                    <span class="tag">Vlog</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="material-item">
+                <div class="material-cover" style="background-image:url('https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=900&q=80');">
+                  <span>6 分钟</span>
+                </div>
+                <div class="material-body">
+                  <strong>Small Talk Lab</strong>
+                  <p>专门练寒暄、转场、接话和更自然的社交型开口。</p>
+                  <div class="tags">
+                    <span class="tag">Small Talk</span>
+                    <span class="tag">社交表达</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="surface-card small">
+            <div class="card-title">
+              <div>
+                <strong>学习主题</strong>
+                <span>按使用场景组织内容，而不是只按文件夹分类</span>
+              </div>
+            </div>
+            <div class="themes">
+              <div class="theme-card">
+                <strong>时尚穿搭</strong>
+                <p>OOTD、购物、风格描述与轻社交表达。</p>
+              </div>
+              <div class="theme-card">
+                <strong>个人成长</strong>
+                <p>自我管理、思维表达、经验复盘与长句输出。</p>
+              </div>
+              <div class="theme-card">
+                <strong>文化体验</strong>
+                <p>旅行见闻、文化差异、城市观察和生活方式。</p>
+              </div>
+              <div class="theme-card">
+                <strong>观点表达</strong>
+                <p>适合训练 “我怎么看” 和 “为什么这么看”。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2>围绕开口练习设计的核心功能</h2>
+          </div>
+          <p>
+            功能不只是罗列开关，而是围绕“听懂、拆句、模仿、纠音、复习、输出”形成完整路径。
+            UI 上用更克制的卡片层级和更专业的配色，不做淘宝详情页那种堆叠感。
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <article class="feature-card">
+            <div class="feature-icon">字</div>
+            <strong>字幕点读</strong>
+            <p>逐句聚焦字幕，点击单词或短语即可查看释义、音标、例句与使用场景，支持中英切换与重点高亮。</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">跟</div>
+            <strong>影子跟读</strong>
+            <p>基于句子循环、停顿、慢放和跟读录音组合出更适合口语模仿的流程，不只是简单倍速播放。</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">录</div>
+            <strong>录音纠音</strong>
+            <p>支持录音回放、发音评分、重音节奏提示和回音法训练，让用户知道自己具体哪里说得不像。</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">卡</div>
+            <strong>英语闪卡</strong>
+            <p>自动生成单词卡、短语卡、表达卡，沉淀来自真实视频的可复用表达，而不是孤立背单词。</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">循</div>
+            <strong>AB 循环与单句暂停</strong>
+            <p>支持整段循环、单句循环、单句暂停、精听模式和听写模式，适合做高密度模仿训练。</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">端</div>
+            <strong>多端同步</strong>
+            <p>电脑上精练、手机上复习、平板上刷卡片，统一学习记录与进度，更符合真实使用节奏。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="ai">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2>多模型 API 接入，服务练习链路</h2>
+          </div>
+          <p>
+            DS、Gemini、豆包、千问不是简单挂名，而是分别参与字幕处理、表达扩写、口语点评、词卡生成和难度分层。
+          </p>
+        </div>
+
+        <div class="ai-layout">
+          <div class="api-stack">
+            <article class="api-card">
+              <strong>DeepSeek</strong>
+              <p>适合做表达重写、句子拆解、闪卡解释和输出建议，成本控制也更灵活。</p>
+            </article>
+            <article class="api-card">
+              <strong>Gemini</strong>
+              <p>用于更强的多模态理解和内容总结，适合视频材料预处理和主题整理。</p>
+            </article>
+            <article class="api-card">
+              <strong>豆包</strong>
+              <p>面向中文用户界面的解释体验更自然，适合做学习提示、词义说明和轻助教问答。</p>
+            </article>
+            <article class="api-card">
+              <strong>千问</strong>
+              <p>用于表达对比、例句生成和学习推荐，在中文语境下更容易补足本地化体验。</p>
+            </article>
+          </div>
+
+          <div class="ai-console">
+            <div class="console-row">
+              <div>
+                <strong>口语点评</strong>
+                <p>识别你跟读中的断句、连读、重音与语速问题，并给出更自然的替代表达。</p>
+              </div>
+              <span class="score-chip">Pron 91</span>
+            </div>
+            <div class="console-row">
+              <div>
+                <strong>表达升级</strong>
+                <p>把 “I think it is good” 一类初级表达自动升级成更地道、更像视频原声的说法。</p>
+              </div>
+              <span class="score-chip">Rewrite</span>
+            </div>
+            <div class="console-row">
+              <div>
+                <strong>学习推荐</strong>
+                <p>根据你最近卡住的句型、词汇和语速，推荐更适合下一步练的 YouTube 素材。</p>
+              </div>
+              <span class="score-chip">Next Set</span>
+            </div>
+            <div class="console-row">
+              <div>
+                <strong>卡片生成</strong>
+                <p>自动沉淀单词卡、短语卡、表达卡与场景卡，让视频语料持续转化成长期资产。</p>
+              </div>
+              <span class="score-chip">Cards</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cards">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2>英语闪卡，不止是背词</h2>
+          </div>
+          <p>
+            闪卡体系要直接服务口语输出，所以单词卡、短语卡、表达卡和场景卡需要并存。
+            信息结构上强调“怎么说、在哪说、替代什么说法”，而不是只展示释义。
+          </p>
+        </div>
+
+        <div class="flash-grid">
+          <article class="flash-card">
+            <div>
+              <strong>单词卡</strong>
+              <p>包含音标、词性、核心义项、视频原句、常见搭配与发音重点。</p>
+            </div>
+            <div class="flash-meta">
+              <span class="tag">音标</span>
+              <span class="tag">例句</span>
+              <span class="tag">词频</span>
+            </div>
+          </article>
+          <article class="flash-card">
+            <div>
+              <strong>短语卡</strong>
+              <p>沉淀真实对话里更常用的块状表达，帮助用户减少“字字翻译”的问题。</p>
+            </div>
+            <div class="flash-meta">
+              <span class="tag">搭配</span>
+              <span class="tag">替换</span>
+              <span class="tag">语境</span>
+            </div>
+          </article>
+          <article class="flash-card">
+            <div>
+              <strong>表达卡</strong>
+              <p>提炼整句表达和句型骨架，适合快速迁移到自己的口语输出里。</p>
+            </div>
+            <div class="flash-meta">
+              <span class="tag">整句</span>
+              <span class="tag">改写</span>
+              <span class="tag">输出</span>
+            </div>
+          </article>
+          <article class="flash-card">
+            <div>
+              <strong>场景卡</strong>
+              <p>把素材里的表达按购物、旅行、社交、观点输出等场景重新归档。</p>
+            </div>
+            <div class="flash-meta">
+              <span class="tag">场景</span>
+              <span class="tag">主题</span>
+              <span class="tag">复习</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="cta">
+      <div class="shell">
+        <div class="cta-panel">
+          <h2>这应该是一款学习产品，不是一页营销长图</h2>
+          <p>
+            我把你要的核心卖点重新组织成更高级的产品首页语言：更清晰的层级、更克制的粉色使用、更强的内容平台感，
+            同时保留“口语练习专用、油管导入、字幕跟读、英语闪卡、AI 接口”的核心辨识度。
+          </p>
+          <div class="cta-actions">
+            <a class="button primary" href="#top">返回顶部</a>
+            <a class="button secondary" href="#materials">查看展示模块</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-row">
+      <div>SpeakFlow · 专为英语口语练习开发的学习网站概念页</div>
+      <div>支持手机 / 平板 / 电脑 · 更适合做产品首页提案</div>
+    </div>
+  </footer>
+</body>
+</html>
