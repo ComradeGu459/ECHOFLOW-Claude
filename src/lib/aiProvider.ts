@@ -102,23 +102,11 @@ export async function callAI(prompt: string, scenario: AIScenario = 'general') {
 }
 
 async function callGemini(prompt: string, profile: AIProviderProfile) {
-    // Point 22: If no key is provided in the profile, we use our server-side proxy
-    // which has the environment's GEMINI_API_KEY.
     if (!profile.apiKey) {
-        console.log(`[Scenario: Explanation] Using Server-Side AI Proxy`);
-        const response = await fetch('/api/ai', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt, scenario: 'explanation', model: profile.model })
-        });
-        if (!response.ok) {
-            const err = await response.json();
-            throw new Error(`AI Proxy Error: ${err.error || response.statusText}`);
-        }
-        return await response.json();
+        throw new Error('请在设置中配置 Gemini API Key');
     }
 
-    console.log(`[Scenario: Explanation] 调用 Gemini REST API (Client Direct):`, profile.model);
+    console.log(`[Scenario: Explanation] 调用 Gemini REST API:`, profile.model);
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${profile.model}:generateContent?key=${profile.apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

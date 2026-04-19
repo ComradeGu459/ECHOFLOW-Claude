@@ -3,7 +3,6 @@ import { createServer as createViteServer } from 'vite';
 import { YoutubeTranscript } from 'youtube-transcript/dist/youtube-transcript.esm.js';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { GoogleGenAI } from '@google/genai';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,9 +11,6 @@ async function startServer() {
   console.log('[Server] Starting bootstrap...');
   const app = express();
   app.use(express.json());
-  
-  const apiKey = process.env.GEMINI_API_KEY;
-  const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
   
   // Health Check for diagnostics
   app.get('/api/health', (req, res) => {
@@ -92,36 +88,6 @@ async function startServer() {
     } catch (e) {
       console.error("YouTube parse error:", e);
       res.status(500).json({ error: e instanceof Error ? e.message : 'Failed to parse YouTube video. Make sure it has closed captions enabled.' });
-    }
-  });
-
-  // AI Proxy Route (Point 22)
-  app.post('/api/ai', async (req, res) => {
-    try {
-      const { prompt, model } = req.body;
-      
-      if (!ai) {
-        return res.status(500).json({ error: 'GEMINI_API_KEY not configured on server' });
-      }
-
-      const response = await ai.models.generateContent({
-        model: model || 'gemini-1.5-flash',
-        contents: prompt,
-        config: { responseMimeType: 'application/json' }
-      });
-
-      const text = response.text ?? '';
-      
-      try {
-        // Strip markdown fences if present
-        const cleaned = text.replace(/```json\n?|```/g, '').trim();
-        res.json(JSON.parse(cleaned));
-      } catch (e) {
-        res.status(500).json({ error: 'AI returned non-JSON response', raw: text.slice(0, 200) });
-      }
-    } catch (e) {
-      console.error("AI Proxy Error:", e);
-      res.status(500).json({ error: e instanceof Error ? e.message : 'AI generation failed' });
     }
   });
 
