@@ -1,0 +1,5 @@
+{
+  "name": "EchoFlow",
+  "description": "An AI-driven English learning platform.",
+  "requestFramePermissions": ["microphone"]
+}
