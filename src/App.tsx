@@ -12,6 +12,7 @@ import { AnalyticsView } from './components/Analytics';
 import { Settings } from './components/Settings';
 import { VideoMeta, FlashcardMeta, LearningLog } from './types';
 import { ImportOptions } from './components/ImportModal';
+import { API_BASE } from './config';
 
 export default function App() {
   // --- Central State (Source of Truth) ---
@@ -86,7 +87,7 @@ export default function App() {
           transcriptData = options.cachedTranscript;
           metadata = options.cachedMeta;
         } else {
-          const res = await fetch('/api/import/youtube', {
+          const res = await fetch(`${API_BASE}/api/import/youtube`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ url: `https://youtube.com/watch?v=${newVideo.youtubeId}` })

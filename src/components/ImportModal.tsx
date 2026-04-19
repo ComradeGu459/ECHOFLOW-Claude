@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { API_BASE } from '../config';
 import { 
   X, Link as LinkIcon, UploadCloud, FileText, Video, 
   CheckCircle2, AlertCircle, Loader2, ChevronRight, 
@@ -89,7 +90,7 @@ export function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
     if (videoInputType === 'link' && videoLink) {
       setProcessingLogs(prev => [...prev, '正在解析 YouTube 视频信息...']);
       try {
-        const response = await fetch('/api/import/youtube', {
+        const response = await fetch(`${API_BASE}/api/import/youtube`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url: videoLink })

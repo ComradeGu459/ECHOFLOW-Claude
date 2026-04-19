@@ -3,6 +3,7 @@ import { createServer as createViteServer } from 'vite';
 import { YoutubeTranscript } from 'youtube-transcript/dist/youtube-transcript.esm.js';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import cors from 'cors';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,6 +11,7 @@ const __dirname = path.dirname(__filename);
 async function startServer() {
   console.log('[Server] Starting bootstrap...');
   const app = express();
+  app.use(cors()); // Allow all origins for API access from Cloudflare Pages
   app.use(express.json());
   
   // Health Check for diagnostics
